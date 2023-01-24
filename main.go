@@ -1,23 +1,24 @@
 package main
 
 import (
+	"embed"
+	"html/template"
 	"log"
 	"net/http"
-
-	"github.com/maxence-charriere/go-app/v9/pkg/app"
 )
 
-func main() {
-	app.Route("/", &home{})
-	app.RunWhenOnBrowser()
+//go:embed views/*.html static/*
+var tmplFS embed.FS
 
-	http.Handle("/", &app.Handler{
-		Name:        "Reservas",
-		Description: "Reserva de mesas",
-		Styles: []string{
-			"/web/global.css",
-			"https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css",
-		},
+var templates = template.Must(template.New("").ParseFS(tmplFS, "views/*.html"))
+
+func main() {
+	http.Handle("/static/", http.FileServer(http.FS(tmplFS)))
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if err := templates.ExecuteTemplate(w, "home.html", nil); err != nil {
+			log.Fatal(err)
+		}
 	})
 
 	if err := http.ListenAndServe("127.0.0.1:8000", nil); err != nil {

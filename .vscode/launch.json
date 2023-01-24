@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "command": "make",
+            "command": "go run .",
             "name": "Run npm start",
             "request": "launch",
             "type": "node-terminal"
