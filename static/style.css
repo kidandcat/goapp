@@ -49,3 +49,7 @@ img {
     border-radius: 7px;
     cursor: pointer;
 }
+
+.img-gray {
+    filter: grayscale(100%);
+}

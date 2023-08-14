@@ -1,0 +1,20 @@
+{{template "header" .}}
+
+<div class="container">
+    <div class="panel" onclick="window.location = '/padel'">
+        <img src="/static/padel.png" alt="">
+        <h3>Padel</h3>
+    </div>
+    <div class="panel">
+        <img src="/static/tenis.png" alt="" onclick="window.location = '/tenis'" class="img-gray">
+        <h3>Tenis</h3>
+    </div>
+</div>
+
+{{range .Reservas}} 
+    <div>
+        {{.Name}} {{.Address}} {{.Date.Format "02/01/2006"}} 
+    </div>
+{{end}}	
+
+{{template "footer" .}}
