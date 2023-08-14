@@ -16,21 +16,18 @@ import (
 
 //go:embed views/*.html static/*
 var tmplFS embed.FS
-var templates = template.Must(template.New("").ParseFS(tmplFS, "views/*.html"))
-var db *gorm.DB
-var store = sessions.NewCookieStore([]byte("key"))
 
 func main() {
-	var err error
-
 	// initialize DB
-	db, err = gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 
 	// Migrate the schema
-	err = db.AutoMigrate(&model.Reserva{})
+	err = db.AutoMigrate(
+		&model.Reserva{},
+	)
 	if err != nil {
 		panic("failed to migrate database")
 	}
@@ -41,8 +38,8 @@ func main() {
 	// initialize routes
 	routes(&controller.Controller{
 		DB:        db,
-		Templates: templates,
-		Store:     store,
+		Templates: template.Must(template.New("").ParseFS(tmplFS, "views/*.html")),
+		Store:     sessions.NewCookieStore([]byte("key")),
 	})
 
 	fmt.Println("Listening on 127.0.0.1:8000")
