@@ -6,6 +6,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"reservas/controller"
+	model "reservas/models"
 
 	"github.com/gorilla/sessions"
 	"gorm.io/driver/sqlite"
@@ -15,9 +17,7 @@ import (
 //go:embed views/*.html static/*
 var tmplFS embed.FS
 var templates = template.Must(template.New("").ParseFS(tmplFS, "views/*.html"))
-
 var db *gorm.DB
-
 var store = sessions.NewCookieStore([]byte("key"))
 
 func main() {
@@ -30,7 +30,7 @@ func main() {
 	}
 
 	// Migrate the schema
-	err = db.AutoMigrate(&Reserva{})
+	err = db.AutoMigrate(&model.Reserva{})
 	if err != nil {
 		panic("failed to migrate database")
 	}
@@ -38,7 +38,12 @@ func main() {
 	// initialize static files
 	http.Handle("/static/", cacheMiddleware(http.FileServer(http.FS(tmplFS))))
 
-	routes()
+	// initialize routes
+	routes(&controller.Controller{
+		DB:        db,
+		Templates: templates,
+		Store:     store,
+	})
 
 	fmt.Println("Listening on 127.0.0.1:8000")
 	fatal(http.ListenAndServe("127.0.0.1:8000", nil))

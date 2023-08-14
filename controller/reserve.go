@@ -1,14 +1,15 @@
-package main
+package controller
 
 import (
 	"log"
 	"net/http"
+	model "reservas/models"
 	"time"
 )
 
-func reserve(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) Reserve(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		if err := templates.ExecuteTemplate(w, "reserve.html", nil); err != nil {
+		if err := c.Templates.ExecuteTemplate(w, "reserve.html", nil); err != nil {
 			log.Fatal(err)
 		}
 		return
@@ -20,7 +21,7 @@ func reserve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create reservation
-	re := &Reserva{
+	re := &model.Reserva{
 		Name:         r.FormValue("name"),
 		Address:      r.FormValue("address"),
 		Date:         time.Now(),
@@ -28,7 +29,7 @@ func reserve(w http.ResponseWriter, r *http.Request) {
 		Participants: "jairo",
 	}
 
-	db.Save(re)
+	c.DB.Save(re)
 
 	// redirect to home
 	http.Redirect(w, r, "/", http.StatusSeeOther)
