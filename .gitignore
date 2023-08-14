@@ -1,2 +1,3 @@
 web/app.wasm
 reservas
+*.db

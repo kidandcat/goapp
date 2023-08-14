@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"reservas/controller"
 	"reservas/model"
 
@@ -14,12 +15,21 @@ import (
 	"gorm.io/gorm"
 )
 
+var (
+	PORT    = os.Getenv("PORT")
+	DB_NAME = os.Getenv("DB_NAME")
+)
+
 //go:embed views/*.html static/*
 var tmplFS embed.FS
 
 func main() {
+	if DB_NAME == "" {
+		DB_NAME = "reservas.db"
+	}
+
 	// initialize DB
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(DB_NAME), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -42,8 +52,11 @@ func main() {
 		Store:     sessions.NewCookieStore([]byte("key")),
 	})
 
-	fmt.Println("Listening on 127.0.0.1:8000")
-	fatal(http.ListenAndServe("127.0.0.1:8000", nil))
+	if PORT == "" {
+		PORT = "3000"
+	}
+	fmt.Println("Listening on 127.0.0.1:" + PORT)
+	fatal(http.ListenAndServe("127.0.0.1:"+PORT, nil))
 }
 
 func cacheMiddleware(next http.Handler) http.Handler {
