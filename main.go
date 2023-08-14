@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 	"reservas/controller"
-	model "reservas/models"
+	"reservas/model"
 
 	"github.com/gorilla/sessions"
 	"gorm.io/driver/sqlite"

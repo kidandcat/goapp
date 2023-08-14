@@ -3,7 +3,7 @@ package controller
 import (
 	"log"
 	"net/http"
-	model "reservas/models"
+	"reservas/model"
 	"time"
 )
 
