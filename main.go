@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/sessions"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -16,6 +17,8 @@ var tmplFS embed.FS
 var templates = template.Must(template.New("").ParseFS(tmplFS, "views/*.html"))
 
 var db *gorm.DB
+
+var store = sessions.NewCookieStore([]byte("key"))
 
 func main() {
 	var err error

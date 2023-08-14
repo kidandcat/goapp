@@ -1,10 +1,16 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/gorilla/mux"
+)
 
 func routes() {
-	http.HandleFunc("/", home)
-	http.HandleFunc("/tenis", tenis)
-	http.HandleFunc("/padel", padel)
-	http.HandleFunc("/reserve", reserve)
+	r := mux.NewRouter()
+	r.HandleFunc("/", home)
+	r.HandleFunc("/tenis", tenis)
+	r.HandleFunc("/padel", padel)
+	r.HandleFunc("/reserve", reserve)
+	http.Handle("/", r)
 }
