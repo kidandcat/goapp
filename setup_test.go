@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"testing"
 	"time"
 
@@ -8,14 +9,17 @@ import (
 	"github.com/ysmood/got"
 )
 
-// test context.
 type G struct {
 	got.G
-
 	browser *rod.Browser
 }
 
-// setup for tests.
+func TestMain(m *testing.M) {
+	code := m.Run()
+	os.Remove(DB_NAME)
+	os.Exit(code)
+}
+
 var setup = func() func(t *testing.T) G {
 	browser := rod.New().MustConnect()
 
@@ -24,13 +28,11 @@ var setup = func() func(t *testing.T) G {
 	go main()
 
 	return func(t *testing.T) G {
-		t.Parallel() // run each test concurrently
-
+		t.Parallel()
 		return G{got.New(t), browser}
 	}
 }()
 
-// a helper function to create an incognito page.
 func (g G) page(url string) *rod.Page {
 	page := g.browser.MustIncognito().MustPage(url).Timeout(10 * time.Second)
 	g.Cleanup(page.MustClose)
