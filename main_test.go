@@ -24,7 +24,7 @@ func TestReserve(t *testing.T) {
 
 	p.MustElement(`input[name="name"]`).MustInput("Test")
 	p.MustElement(`input[name="address"]`).MustInput("Test address")
-	p.MustElement("input[type='submit']").MustClick()
+	p.MustElement(`input[type="submit"]`).MustClick()
 	p.MustWaitStable()
 	g.Eq(p.MustInfo().URL, "http://localhost:3000/")
 
